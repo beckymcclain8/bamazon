@@ -1,5 +1,9 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var stock;
+var quantityNeeded;
+var id;
+
 var connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -11,7 +15,8 @@ connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
   itemsForSale();
-  // promptUser();
+  //this is to update my quantity for testing purposes
+  // updateQuantity();
 });
 
 function itemsForSale() {
@@ -45,64 +50,87 @@ function promptUser() {
       }
     ])
     .then(function(answer) {
-      // I think I'm having an issue because I have an async function inside another one... (or somehting like that)
-      // await?
       connection.query(
         "SELECT stock_quantity FROM products WHERE ? ",
         {
           id: answer.item
         },
         function(err, res) {
-            if (err) throw err;
-            console.log(answer.item);
-          console.log(res);
-          // console.log(res.item + ", " + res.quantity)
-          if (answer.quantity < res) {
+          if (err) throw err;
+          stock = (res[0].stock_quantity);
+          quantityNeeded = parseInt(answer.quantity);
+          id = answer.item;
+
+          console.log(
+            "how many items in stock: " +
+              stock +
+              "\nHow many they need: " +
+              quantityNeeded
+          );
+          console.log(quantityNeeded);
+          if (quantityNeeded < stock) {
             console.log("place order");
-            //update mysql
-            updateProduct(res, answer.quantity, answer.item);
-            //console.log(customer's total)
-            customerTotal(answer.item, answer.quantity);
+            updateProduct();
+            customerTotal();
           } else {
             console.log("I'm sorry, this item is out of stock.");
           }
         }
       );
-      connection.end();
+      // connection.end();
     });
-
-  function updateProduct(stock_quantity, num, id) {
-    var update = parseFloat(stock_quantity) - parseFloat(num);
-    connection.query(
-      "UPDATE products SET ? WHERE ?",
-      [
-        {
-          stock_quantity: update
-        },
-        {
-          id: id
-        }
-      ],
-      function(err, results) {
-          if (err) throw err;
-        //comment this out later
-        console.log("updated sql");
-      }
-    );
-  }
 }
 
-function customerTotal(id, quantity) {
+function updateProduct() {
+  var update = stock - quantityNeeded;
+  console.log(update);
   connection.query(
-    "SELECT price FROM products WHERE id = ? ",
+    "UPDATE products SET ? WHERE ?",
+    [
+      {
+        stock_quantity: update
+      },
+      {
+        id: id
+      }
+    ],
+    function(err, results) {
+      if (err) throw err;
+      //comment this out later
+      console.log("updated sql");
+    }
+  );
+}
+
+function customerTotal() {
+  connection.query(
+    "SELECT price FROM products WHERE ? ",
     {
       id: id
     },
     function(err, res) {
       if (err) throw err;
-      var price = parseFloat(res);
-      var total = price * parseFloat(quantity);
+      var price = res[0].price;
+      var total = price * quantityNeeded;
       console.log("Your total is: $" + total);
+    }
+  );
+}
+
+function updateQuantity() {
+  var query = connection.query(
+    "UPDATE products SET ? WHERE ?",
+    [
+      {
+        stock_quantity: 10
+      },
+      {
+        id: 8
+      }      
+    ],
+    function(err, res) {
+      if (err) throw err;
+      console.log(res.affectedRows + " rows updated!");
     }
   );
 }
