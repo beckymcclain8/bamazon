@@ -67,13 +67,15 @@ var connection = mysql.createConnection({
   function lowInventory(callback) {
     connection.query("SELECT id, product_name FROM products GROUP BY stock_quantity HAVING COUNT(*) <= 5", function(err, res){
         if (err) throw err;
-        else {
+        else if (res){
             console.log("The following products have less than 5 items left in inventory:");
             for (var i = 0; i < res.length; i++) {
                 console.log("id: " + res[i].id + " | " + res[i].product_name);
                 lowItemArray.push(res[i].id);
             }
-        callback();
+        addToInventory();
+        } else {
+            console.log("All products are well stocked with 5 or more items.");
         }
     });
 }
@@ -97,12 +99,20 @@ function addToInventory() {
 }
 
 function addNewProduct() {
-    console.log("add new product");
     inquirer.prompt([
         {
             type: "input",
             message: "What product would you like to add?",
             name: "product",
+            validate: function(value) {
+                // console.log(value);
+                if (value) {
+                    return true;
+                } else {
+                console.log("Please enter a new product.");
+                // addNewProduct();
+                }
+            }
         },
         {
             type: "list",
@@ -114,6 +124,15 @@ function addNewProduct() {
             type: "input",
             message: "How much does this item cost?",
             name: "cost",
+            validate: function(newPrice) {
+                // console.log(typeof parseInt(newPrice));
+                if (isNaN(newPrice) === true) {
+                    console.log("\nYou must enter a number for the price.");
+                    // addNewProduct();
+                } else {
+                    return true;
+                }
+            }
         }
     ]).then(function(answers) {
         if (answers.dept != "Other") {
@@ -133,7 +152,16 @@ function addNewProduct() {
                 {
                     type: "input",
                     message: "Please type in the new department name.",
-                    name: "newDept"
+                    name: "newDept",
+                    validate: function(value) {
+                        // console.log(value);
+                        if (value) {
+                            return true;
+                        } else {
+                        console.log("You must enter a new department name.");
+                        // addNewProduct();
+                        }
+                    }
                 }
             ]).then(function(ans) {
                 connection.query("INSERT INTO products SET ?",
@@ -147,6 +175,7 @@ function addNewProduct() {
                     console.log("New product (" + answers.product + ") added!");
                 }
             );
+            connection.end();
             })
         }
     })
