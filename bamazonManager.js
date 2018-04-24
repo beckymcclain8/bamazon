@@ -81,11 +81,10 @@ function lowInventory(callback) {
     function(err, res) {
       if (err) throw err;
       else if (res) {
-        console.log(
-          "The following products have less than 5 items left in inventory:"
-        );
+        console.log("The following products have less than 5 items left in inventory:");
         for (var i = 0; i < res.length; i++) {
           console.log("id: " + res[i].id + " | " + res[i].product_name);
+          // I am pushing the ids to an array so that I can refernce them when I run the updateQuantity function.
           lowItemArray.push(res[i].id);
         }
         updateQuantity();
@@ -126,6 +125,7 @@ function addNewProduct() {
         type: "input",
         message: "What product would you like to add?",
         name: "product",
+        // I am making sure the user enters something here and doesn't leave the input blank.
         validate: function(value) {
           if (value) {
             return true;
@@ -144,6 +144,7 @@ function addNewProduct() {
         type: "input",
         message: "How much does this item cost?",
         name: "cost",
+        // I am making sure the user enters a number for the price of the item.
         validate: function(newPrice) {
           if (isNaN(newPrice) === true) {
             console.log("\nYou must enter a number for the price.");
@@ -170,8 +171,8 @@ function addNewProduct() {
           }
         );
       } else {
-        inquirer
-          .prompt([
+        // If the user chose the "other" option as a department name, it will prompt them to enter a new department name.
+        inquirer.prompt([
             {
               type: "input",
               message: "Please type in the new department name.",
@@ -226,6 +227,8 @@ function updateQuantity() {
   }
 }
 
+// I added this functin to make the whole thing more "user friendly."  I didn't like that you had to start over every time.  
+// I wanted to give the user the option to stay in the connection until they were done with everything they needed to do.
 function backToMenu() {
   console.log("-------------------------------------------------");
   inquirer
