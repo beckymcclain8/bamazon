@@ -15,7 +15,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId + "\n");
+  // console.log("connected as id " + connection.threadId + "\n");
   itemsForSale();
 });
 
@@ -27,7 +27,6 @@ function itemsForSale() {
       console.log("Items for Sale:");
       // id2 is storing the highest id number which I will need later
       id2 = res.length;
-      console.log(id2);
       for (var i = 0; i < res.length; i++) {
         console.log(
           res[i].id + ". " + res[i].product_name + " | $" + res[i].price

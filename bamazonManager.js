@@ -33,7 +33,6 @@ function menuOptions() {
       }
     ])
     .then(function(answer) {
-
       switch (answer.options) {
         case "View products for sale":
           productList();
@@ -75,19 +74,21 @@ function productList() {
   });
 }
 
-function lowInventory(callback) {
+function lowInventory() {
   connection.query(
     "SELECT id, product_name FROM products GROUP BY stock_quantity HAVING COUNT(*) <= 5",
     function(err, res) {
       if (err) throw err;
       else if (res) {
-        console.log("The following products have less than 5 items left in inventory:");
+        console.log(
+          "The following products have less than 5 items left in inventory:"
+        );
         for (var i = 0; i < res.length; i++) {
           console.log("id: " + res[i].id + " | " + res[i].product_name);
           // I am pushing the ids to an array so that I can refernce them when I run the updateQuantity function.
           lowItemArray.push(res[i].id);
         }
-        updateQuantity();
+        backToMenu();
       }
       // I'm trying to add something that alerts the user that all items have 5 items or more, but I couldn't figure out how to do it...
 
@@ -100,22 +101,36 @@ function lowInventory(callback) {
 }
 
 function addToInventory() {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        message: "Would you like to add more inventory?",
-        name: "inventory",
-        choices: ["yes", "no"]
+  connection.query(
+    "SELECT id, product_name FROM products GROUP BY stock_quantity HAVING COUNT(*) <= 5",
+    function(err, res) {
+      if (err) throw err;
+      console.log(
+        "The following products have less than 5 items left in inventory:"
+      );
+      for (var i = 0; i < res.length; i++) {
+        console.log("id: " + res[i].id + " | " + res[i].product_name);
+        lowItemArray.push(res[i].id);
       }
-    ])
-    .then(function(answer) {
-      if (answer.inventory === "yes") {
-        lowInventory(updateQuantity);
-      } else {
-        backToMenu();
-      }
-    });
+
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Would you like to add more inventory?",
+            name: "inventory",
+            choices: ["yes", "no"]
+          }
+        ])
+        .then(function(answer) {
+          if (answer.inventory === "yes") {
+            updateQuantity();
+          } else {
+            connection.end();
+          }
+        });
+    }
+  );
 }
 
 function addNewProduct() {
@@ -172,7 +187,8 @@ function addNewProduct() {
         );
       } else {
         // If the user chose the "other" option as a department name, it will prompt them to enter a new department name.
-        inquirer.prompt([
+        inquirer
+          .prompt([
             {
               type: "input",
               message: "Please type in the new department name.",
@@ -227,7 +243,7 @@ function updateQuantity() {
   }
 }
 
-// I added this functin to make the whole thing more "user friendly."  I didn't like that you had to start over every time.  
+// I added this functin to make the whole thing more "user friendly."  I didn't like that you had to start over every time.
 // I wanted to give the user the option to stay in the connection until they were done with everything they needed to do.
 function backToMenu() {
   console.log("-------------------------------------------------");
