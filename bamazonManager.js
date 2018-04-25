@@ -13,7 +13,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId + "\n");
+  // console.log("connected as id " + connection.threadId + "\n");
   menuOptions();
 });
 
@@ -236,11 +236,13 @@ function updateQuantity() {
       ],
       function(err, res) {
         if (err) throw err;
-        console.log("Inventory updated!");
-        backToMenu();
+        
+        
       }
     );
   }
+  console.log("Inventory updated!");
+  backToMenu();
 }
 
 // I added this functin to make the whole thing more "user friendly."  I didn't like that you had to start over every time.
