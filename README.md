@@ -1,14 +1,10 @@
 # Bamazon
-Why the project is useful
-How users can get started with the project
-Where users can get help with your project
-Who maintains and contributes to the project
 
-Bamazon is a CLI node application.  The user will choose between 2 different files: bamazonCustomer or bamazonManager depending on whether they are a customer or an employee.  
+Bamazon is a CLI node application.  The user will choose between 2 different files: bamazonCustomer.js or bamazonManager.js.
 
-#Bamazon Customer
+# Bamazon Customer
 
-If they would like to act as a customer, they will get started by typing 'node bamazonCustomer.js' in their terminal.  This will prompt them with a list of items for sale.  
+If the user would like to act as a customer, they will get started by typing 'node bamazonCustomer.js' in their terminal.  This will prompt them with a list of items for sale.  
 
 ![Bamazon Product List](/images/bcproducts.JPG)
 Format: ![Alt Text](url)
@@ -19,14 +15,13 @@ After the user chooses the item number they would like to purchase the app will 
 Format: ![Alt Text](url)
 
 Please click this link to see a video of the app running: 
-https://drive.google.com/file/d/1wkf53l8jxiUKf-f2MFpPFiefMwJNOOLA/view - automatic!
 [bamazonCustomer Video](https://drive.google.com/file/d/1wkf53l8jxiUKf-f2MFpPFiefMwJNOOLA/view)
 
 
 
-#Bamazon Manager
+# Bamazon Manager
 
-If they would like to act as a store manager, the user will get started by typing 'node bamazonManager.js' in their terminal.  This will prompt them with four options to select from.
+If the user would like to act as a store manager, they will get started by typing 'node bamazonManager.js' in their terminal.  This will prompt them with four options to select from.
 
 ![Bamazon Manager Menu](/images/bmmenu.JPG)
 Format: ![Alt Text](url)
@@ -58,5 +53,7 @@ Format: ![Alt Text](url)
 
 
 Please click this link to see a video of the bamazonManager.js app working: 
-https://drive.google.com/file/d/1wkf53l8jxiUKf-f2MFpPFiefMwJNOOLA/view - automatic!
 [bamazonManager Video](https://drive.google.com/file/d/1wkf53l8jxiUKf-f2MFpPFiefMwJNOOLA/view)
+
+
+This app was created and is maintained by Becky McClain.
